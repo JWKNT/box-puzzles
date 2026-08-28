@@ -147,7 +147,14 @@ export default function PuzzleApp() {
           </div>
         </section>
 
-        <p className="rules">One gem. One false inscription. Which box is forced?</p>
+        <section className="rules" aria-labelledby="rules-title">
+          <h2 id="rules-title">Rules</h2>
+          <ol>
+            <li>Exactly one box contains the gem.</li>
+            <li>Exactly one box&apos;s inscription is false; every other inscription is true.</li>
+            <li>Every valid case puts the gem in the same box. Select that box. The false inscription may differ between valid cases.</li>
+          </ol>
+        </section>
 
         {loadError && <p className="load-error" role="alert">The verified puzzle catalog could not be loaded.</p>}
         {!puzzle && !loadError && <p className="loading" role="status">Loading verified puzzles…</p>}
@@ -211,7 +218,7 @@ export default function PuzzleApp() {
               <summary>Lean certificate <span>{puzzle.id} · checked</span></summary>
               <div className="certificate-grid">
                 <dl>
-                  <div><dt>Model</dt><dd>one liar, one gem</dd></div>
+                  <div><dt>Model</dt><dd>exactly one gem and exactly one false inscription</dd></div>
                   <div><dt>Valid cases</dt><dd>{puzzle.worlds.length}</dd></div>
                   <div><dt>Forced gem</dt><dd>{gemBox.name}</dd></div>
                   <div><dt>Possible liars</dt><dd>{liarNames}</dd></div>

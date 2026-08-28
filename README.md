@@ -1,6 +1,10 @@
 # Box Logic
 
-Procedurally generated colored-box puzzles with exactly one false inscription and one gem. The liar may be ambiguous; the gem is not.
+Procedurally generated colored-box puzzles governed by three rules:
+
+1. Exactly one box contains the gem.
+2. Exactly one box's inscription is false; every other inscription is true.
+3. Every valid case puts the gem in the same box. The false inscription may differ between valid cases.
 
 Lean constructs and certifies the published catalog. A world contains one `Fin n` gem location and one `Fin n` liar. A puzzle is exported only when:
 

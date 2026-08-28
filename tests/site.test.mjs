@@ -16,6 +16,11 @@ test('static page uses jehlp.net metadata, shared theme, and its own favicon', (
 });
 
 test('interface exposes generation, answer, explanation, and certificate controls', () => {
+  assert.match(source, />Rules</);
+  assert.match(source, /Exactly one box contains the gem/);
+  assert.match(source, /Exactly one box&apos;s inscription is false; every other inscription is true/);
+  assert.match(source, /The false inscription may differ between valid cases/);
+  assert.doesNotMatch(source, /One gem\. One false inscription\. Which box is forced\?/);
   assert.match(source, /type="range" min="2" max="8"/);
   assert.match(source, />New puzzle</);
   assert.match(source, />Check answer</);
