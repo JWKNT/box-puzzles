@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { generatePuzzle } from './puzzleGenerator.mjs';
 
 type Formula = { type: string; box?: number; value?: Formula; left?: Formula; right?: Formula };
 type Box = { id: number; letter: string; name: string; color: string; statement: string; ast: Formula };
@@ -17,32 +18,28 @@ type Puzzle = {
   worlds: World[];
   leanSource: string;
 };
-type Catalog = {
-  schema: number;
-  model: string;
-  theoremExistence: string;
-  theoremUniqueness: string;
-  puzzles: Puzzle[];
-};
 type Result = 'correct' | 'incorrect' | 'revealed' | null;
 
-const randomIndex = (length: number) => {
-  if (length < 2) return 0;
+const MAX_SEED = 0xffffffff;
+const initialPuzzle = generatePuzzle(2, 1, 0) as Puzzle;
+
+const randomSeed = () => {
   const values = new Uint32Array(1);
   crypto.getRandomValues(values);
-  return values[0] % length;
+  return values[0];
 };
 
 export default function PuzzleApp() {
-  const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [boxCount, setBoxCount] = useState(2);
   const [liarCount, setLiarCount] = useState(1);
-  const [puzzleId, setPuzzleId] = useState('bp-2-1-0');
+  const [puzzle, setPuzzle] = useState<Puzzle | null>(initialPuzzle);
+  const [generating, setGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [result, setResult] = useState<Result>(null);
   const [seedError, setSeedError] = useState<string | null>(null);
   const [copyLabel, setCopyLabel] = useState('Copy Lean source');
-  const [loadError, setLoadError] = useState(false);
+  const generationToken = useRef(0);
 
   useEffect(() => {
     const themeScript = document.createElement('script');
@@ -51,43 +48,41 @@ export default function PuzzleApp() {
     document.head.append(themeScript);
 
     const params = new URLSearchParams(window.location.search);
-    const requestedCount = Number(params.get('n'));
+    const requestedBoxCount = Number(params.get('n'));
     const requestedLiarCount = Number(params.get('l'));
-    const requestedPuzzle = params.get('p');
-    fetch('./puzzles.json')
-      .then((response) => {
-        if (!response.ok) throw new Error(String(response.status));
-        return response.json();
-      })
-      .then((data: Catalog) => {
-        setCatalog(data);
-        const nextBoxCount = requestedCount >= 2 && requestedCount <= 16 ? requestedCount : 2;
-        setBoxCount(nextBoxCount);
-        if (requestedLiarCount >= 1 && requestedLiarCount < nextBoxCount) {
-          setLiarCount(requestedLiarCount);
-        }
-        if (requestedPuzzle) setPuzzleId(requestedPuzzle);
-      })
-      .catch(() => setLoadError(true));
+    const legacySeed = params.get('p')?.split('-').at(-1);
+    const requestedSeed = Number(params.get('seed') ?? legacySeed);
+    const validRequest = requestedBoxCount >= 2 && requestedBoxCount <= 16
+      && requestedLiarCount >= 1 && requestedLiarCount < requestedBoxCount
+      && Number.isSafeInteger(requestedSeed) && requestedSeed >= 0 && requestedSeed <= MAX_SEED;
 
-    return () => themeScript.remove();
+    const timer = validRequest && (
+      requestedBoxCount !== 2 || requestedLiarCount !== 1 || requestedSeed !== 0
+    ) ? window.setTimeout(() => {
+        setGenerating(true);
+        const generated = generatePuzzle(requestedBoxCount, requestedLiarCount, requestedSeed) as Puzzle | null;
+        setBoxCount(requestedBoxCount);
+        setLiarCount(requestedLiarCount);
+        setPuzzle(generated);
+        setGenerationError(generated ? null : 'No unique puzzle was found for that seed.');
+        setGenerating(false);
+      }, 0) : undefined;
+
+    return () => {
+      themeScript.remove();
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
   }, []);
-
-  const choices = useMemo(
-    () => catalog?.puzzles.filter((puzzle) =>
-      puzzle.boxCount === boxCount && puzzle.liarCount === liarCount) ?? [],
-    [catalog, boxCount, liarCount],
-  );
-  const puzzle = choices.find((entry) => entry.id === puzzleId) ?? choices[0];
 
   useEffect(() => {
     if (!puzzle) return;
     const url = new URL(window.location.href);
     url.searchParams.set('n', String(puzzle.boxCount));
     url.searchParams.set('l', String(puzzle.liarCount));
-    url.searchParams.set('p', puzzle.id);
+    url.searchParams.set('seed', String(puzzle.seed));
+    url.searchParams.delete('p');
     window.history.replaceState(null, '', url);
-  }, [puzzle, puzzleId]);
+  }, [puzzle]);
 
   const clearAnswer = () => {
     setSelected(null);
@@ -96,45 +91,48 @@ export default function PuzzleApp() {
     setCopyLabel('Copy Lean source');
   };
 
-  const chooseParameters = (nextBoxCount: number, nextLiarCount: number) => {
-    const next = catalog?.puzzles.filter((entry) =>
-      entry.boxCount === nextBoxCount && entry.liarCount === nextLiarCount) ?? [];
-    setBoxCount(nextBoxCount);
-    setLiarCount(nextLiarCount);
-    setPuzzleId(next[randomIndex(next.length)]?.id ?? `bp-${nextBoxCount}-${nextLiarCount}-0`);
+  const generateFromSeed = (seed: number, nextBoxCount = boxCount, nextLiarCount = liarCount) => {
+    const token = generationToken.current + 1;
+    generationToken.current = token;
+    setGenerating(true);
+    setGenerationError(null);
     clearAnswer();
+    window.setTimeout(() => {
+      const generated = generatePuzzle(nextBoxCount, nextLiarCount, seed) as Puzzle | null;
+      if (generationToken.current !== token) return;
+      setPuzzle(generated);
+      setGenerationError(generated ? null : 'No unique puzzle was found for that seed. Try another seed.');
+      setGenerating(false);
+    }, 0);
   };
 
   const chooseBoxCount = (count: number) => {
-    chooseParameters(count, Math.min(liarCount, count - 1));
+    generationToken.current += 1;
+    setBoxCount(count);
+    setLiarCount((current) => Math.min(current, count - 1));
+    setPuzzle(null);
+    setGenerating(false);
+    setGenerationError(null);
+    clearAnswer();
   };
 
   const chooseLiarCount = (count: number) => {
-    chooseParameters(boxCount, count);
-  };
-
-  const newPuzzle = () => {
-    if (choices.length === 0) return;
-    let next = choices[randomIndex(choices.length)];
-    if (choices.length > 1 && next.id === puzzle?.id) {
-      next = choices[(choices.indexOf(next) + 1) % choices.length];
-    }
-    setPuzzleId(next.id);
+    generationToken.current += 1;
+    setLiarCount(count);
+    setPuzzle(null);
+    setGenerating(false);
+    setGenerationError(null);
     clearAnswer();
   };
 
   const loadSeed = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const seed = Number(new FormData(event.currentTarget).get('seed'));
-    const next = Number.isSafeInteger(seed) && seed >= 0
-      ? choices.find((entry) => entry.seed === seed)
-      : undefined;
-    if (!next) {
-      setSeedError('No verified puzzle has that seed for these box and liar settings.');
+    if (!Number.isSafeInteger(seed) || seed < 0 || seed > MAX_SEED) {
+      setSeedError(`Enter a whole-number seed from 0 to ${MAX_SEED}.`);
       return;
     }
-    setPuzzleId(next.id);
-    clearAnswer();
+    generateFromSeed(seed);
   };
 
   const checkAnswer = () => {
@@ -185,7 +183,9 @@ export default function PuzzleApp() {
               <label htmlFor="liar-count">Liar boxes <output htmlFor="liar-count">{liarCount}</output></label>
               <input id="liar-count" type="range" min="1" max={boxCount - 1} value={liarCount} onChange={(event) => chooseLiarCount(Number(event.target.value))} />
             </div>
-            <button className="new-puzzle" type="button" onClick={newPuzzle}>New puzzle</button>
+            <button className="generate-puzzle" type="button" disabled={generating} onClick={() => generateFromSeed(randomSeed())}>
+              {generating ? 'Generating…' : 'Generate puzzle'}
+            </button>
           </div>
         </section>
 
@@ -194,14 +194,18 @@ export default function PuzzleApp() {
           <ol>
             <li>Exactly one box contains the gem.</li>
             <li>Exactly {liarCount} {liarCount === 1 ? 'inscription is' : 'inscriptions are'} false; the other {truthfulCount} {truthfulCount === 1 ? 'is' : 'are'} true.</li>
+            <li>Each inscription is evaluated as one complete statement; its parts do not lie independently. If a false inscription says “A or B,” then both A and B are false.</li>
             <li>The inscriptions uniquely determine both the gem box and every liar box. Select the gem box.</li>
           </ol>
         </section>
 
-        {loadError && <p className="load-error" role="alert">The verified puzzle catalog could not be loaded.</p>}
-        {!puzzle && !loadError && <p className="loading" role="status">Loading verified puzzles…</p>}
+        {generating && <p className="loading" role="status">Generating from the seed and checking every possible case…</p>}
+        {generationError && <p className="load-error" role="alert">{generationError}</p>}
+        {!puzzle && !generating && !generationError && (
+          <p className="empty-state">Choose the box and liar counts, then generate a puzzle or enter a seed.</p>
+        )}
 
-        {puzzle && (
+        {puzzle && !generating && (
           <>
             <fieldset className="puzzle-fieldset">
               <legend className="sr-only">Choose the box containing the gem</legend>
@@ -225,17 +229,17 @@ export default function PuzzleApp() {
               <button className="reveal-answer" type="button" onClick={reveal}>Reveal</button>
               <form className="seed-picker" onSubmit={loadSeed}>
                 <label htmlFor="seed-input">Seed</label>
-                <input id="seed-input" name="seed" key={puzzle.id} type="number" min="0" step="1" defaultValue={puzzle.seed} />
+                <input id="seed-input" name="seed" key={puzzle.id} type="number" min="0" max={MAX_SEED} step="1" defaultValue={puzzle.seed} />
                 <button type="submit">Load seed</button>
               </form>
-              <span className="puzzle-id">{puzzle.worlds.length} valid {puzzle.worlds.length === 1 ? 'case' : 'cases'}</span>
+              <span className="puzzle-id">attempt {puzzle.attempt} · 1 valid case</span>
             </div>
 
             {seedError && <p className="seed-error" role="alert">{seedError}</p>}
 
             <div className={`answer-status${result ? ` is-${result}` : ''}`} role="status" aria-live="polite">
               {!result && 'Choose a box.'}
-              {result === 'incorrect' && 'Not forced. Try another, or reveal.'}
+              {result === 'incorrect' && 'Not the solution. Try another, or reveal.'}
               {result === 'correct' && <>Correct · <strong>{gemBox.name} box</strong></>}
               {result === 'revealed' && <>Gem · <strong>{gemBox.name} box</strong></>}
             </div>
@@ -243,7 +247,7 @@ export default function PuzzleApp() {
             {solved && (
               <section className="reasoning" aria-labelledby="reasoning-title">
                 <div className="section-heading">
-                  <div><p className="eyebrow">Result</p><h2 id="reasoning-title">All valid cases agree</h2></div>
+                  <div><p className="eyebrow">Result</p><h2 id="reasoning-title">The unique valid case</h2></div>
                   <p>Liars: {liarNames}. Gem: {gemBox.name}.</p>
                 </div>
                 <div className="model-table-wrap">
@@ -262,15 +266,15 @@ export default function PuzzleApp() {
             )}
 
             <details className="certificate">
-              <summary>Lean certificate <span>{puzzle.id} · checked</span></summary>
+              <summary>Lean proof source <span>{puzzle.id} · reproducible</span></summary>
               <div className="certificate-grid">
                 <dl>
                   <div><dt>Model</dt><dd>exactly one gem and exactly {puzzle.liarCount} false {puzzle.liarCount === 1 ? 'inscription' : 'inscriptions'}</dd></div>
-                  <div><dt>Valid cases</dt><dd>{puzzle.worlds.length}</dd></div>
+                  <div><dt>Verifier</dt><dd>exhaustive browser search</dd></div>
+                  <div><dt>Seed</dt><dd>{puzzle.seed}</dd></div>
+                  <div><dt>Attempt</dt><dd>{puzzle.attempt}</dd></div>
                   <div><dt>Forced gem</dt><dd>{gemBox.name}</dd></div>
                   <div><dt>Forced liars</dt><dd>{liarNames}</dd></div>
-                  <div><dt>Existence</dt><dd><code>{catalog?.theoremExistence}</code></dd></div>
-                  <div><dt>Uniqueness</dt><dd><code>{catalog?.theoremUniqueness}</code></dd></div>
                 </dl>
                 <div>
                   <div className="code-heading"><h3>Exact instance</h3><button type="button" onClick={copyLean}>{copyLabel}</button></div>
@@ -282,6 +286,13 @@ export default function PuzzleApp() {
           </>
         )}
 
+        {!puzzle && (
+          <form className="standalone-seed-picker" onSubmit={loadSeed}>
+            <label htmlFor="standalone-seed-input">Seed</label>
+            <input id="standalone-seed-input" name="seed" type="number" min="0" max={MAX_SEED} step="1" defaultValue="0" />
+            <button type="submit" disabled={generating}>Generate from seed</button>
+          </form>
+        )}
       </main>
     </>
   );

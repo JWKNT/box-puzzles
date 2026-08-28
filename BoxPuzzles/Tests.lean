@@ -1,4 +1,4 @@
-import BoxPuzzles.Export
+import BoxPuzzles.Generator
 
 namespace BoxPuzzles
 

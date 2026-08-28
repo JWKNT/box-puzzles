@@ -7,7 +7,7 @@ const source = await readFile(new URL('../src/PuzzleApp.tsx', import.meta.url), 
 
 test('static page uses jehlp.net metadata, shared theme, and its own favicon', () => {
   assert.match(html, /https:\/\/jehlp\.net\/box-puzzles\//);
-  assert.match(html, /configurable liar counts and a unique solution/);
+  assert.match(html, /generated and exhaustively checked on demand/);
   assert.match(source, /liarCount/);
   assert.match(html, /site-theme\/v2\/base\.css/);
   assert.match(source, /site-theme\/v2\/theme\.js/);
@@ -20,16 +20,19 @@ test('static page uses jehlp.net metadata, shared theme, and its own favicon', (
 test('interface exposes generation, answer, explanation, and certificate controls', () => {
   assert.match(source, />Rules</);
   assert.match(source, /Exactly one box contains the gem/);
+  assert.match(source, /Each inscription is evaluated as one complete statement/);
+  assert.match(source, /If a false inscription says “A or B,” then both A and B are false/);
   assert.match(source, /The inscriptions uniquely determine both the gem box and every liar box/);
   assert.doesNotMatch(source, /may differ between valid cases/);
   assert.doesNotMatch(source, /One gem\. One false inscription\. Which box is forced\?/);
   assert.match(source, /id="box-count" type="range" min="2" max="16"/);
   assert.match(source, /id="liar-count" type="range" min="1"/);
-  assert.match(source, />New puzzle</);
+  assert.match(source, /Generate puzzle/);
   assert.match(source, />Load seed</);
   assert.match(source, />Check answer</);
   assert.match(source, />Reveal</);
-  assert.match(source, /All valid cases agree/);
-  assert.match(source, /Lean certificate/);
+  assert.match(source, /The unique valid case/);
+  assert.match(source, /Lean proof source/);
   assert.match(source, /Normalized statements/);
+  assert.doesNotMatch(source, /fetch\(['"]\.\/puzzles\.json/);
 });
