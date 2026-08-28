@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const source = await readFile(new URL('../src/PuzzleApp.tsx', import.meta.url), 'utf8');
+const css = await readFile(new URL('../app/globals.css', import.meta.url), 'utf8');
 
 test('static page uses jehlp.net metadata, shared theme, and its own favicon', () => {
   assert.match(html, /https:\/\/jehlp\.net\/box-puzzles\//);
@@ -43,4 +44,10 @@ test('interface exposes generation, answer, explanation, and certificate control
   assert.match(source, /Lean proof source/);
   assert.match(source, /Normalized statements/);
   assert.doesNotMatch(source, /fetch\(['"]\.\/puzzles\.json/);
+});
+
+test('box cards use equal-height grid tracks and stretch their bodies', () => {
+  assert.match(css, /\.boxes \{[^}]*grid-auto-rows: 1fr/);
+  assert.match(css, /\.box \{[^}]*display: flex[^}]*flex-direction: column/);
+  assert.match(css, /\.box-body \{[^}]*flex: 1/);
 });
