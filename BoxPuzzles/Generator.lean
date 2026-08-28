@@ -45,14 +45,18 @@ private def negated : Formula n → Formula n
   | .not formula => formula
   | formula => .not formula
 
-def candidatePuzzle (n : Nat) (positive : 0 < n) (seed attempt : Nat) : Puzzle n where
+def candidatePuzzle (n : Nat) (positive : 0 < n) (liarCount seed attempt : Nat) : Puzzle n where
+  liarCount := liarCount
   statements speaker :=
+    let liarOffset := mix seed attempt liarCount 23
+    let targetLiars := (List.finRange n).filter fun box =>
+      ((box.val + liarOffset) % n) < liarCount
     let target : World n := {
-      gem := boxIndex n (mix seed attempt 0 19) positive
-      liar := boxIndex n (mix seed attempt 0 23) positive
+      gem := boxIndex n (mix seed attempt liarCount 19) positive
+      liars := targetLiars
     }
-    let formula := formulaForCode n positive speaker (mix seed attempt speaker.val n)
-    let expected := decide (target.liar ≠ speaker)
+    let formula := formulaForCode n positive speaker (mix seed attempt speaker.val (n + liarCount))
+    let expected := !(target.isLiar speaker)
     if eval target formula = expected then formula else negated formula
 
 def statementList (puzzle : Puzzle n) : List (Formula n) :=
@@ -78,16 +82,11 @@ def readableFormula : Formula n → Bool
   | .implies left right =>
       decide (left ≠ right) && readableFormula left && readableFormula right
 
-def nonconstantFormula (n : Nat) (formula : Formula n) : Bool :=
-  let values := (allWorlds n).map fun world => eval world formula
-  values.any id && values.any (!·)
-
 def readableCandidateB (puzzle : Puzzle n) : Bool :=
   let statements := statementList puzzle
   let kindCount := (statements.map formulaKind).eraseDups.length
   let requiredKinds := if n ≤ 3 then min n 2 else 3
   decide statements.Nodup && statements.all readableFormula &&
-    statements.all (nonconstantFormula n) &&
     decide (requiredKinds ≤ kindCount)
 
 def readableCandidate (puzzle : Puzzle n) : Prop :=
@@ -98,47 +97,36 @@ instance (puzzle : Puzzle n) : Decidable (readableCandidate puzzle) :=
 
 structure GeneratedPuzzle where
   boxCount : Nat
+  liarCount : Nat
   seed : Nat
   attempt : Nat
   certified : CertifiedPuzzle boxCount
 
-def exampleTwo : Puzzle 2 where
-  statements speaker :=
-    if speaker = (0 : Fin 2) then
-      .atom (.truthfulAt speaker)
-    else
-      .atom .gemIsLiar
-
-theorem exampleTwo_unique : HasUniqueGem exampleTwo := by native_decide
-
-def exampleTwoCertified : CertifiedPuzzle 2 :=
-  {
-    puzzle := exampleTwo
-    witness := { gem := 0, liar := 0 }
-    witness_valid := by native_decide
-    certificate := exampleTwo_unique
-  }
-
-def searchPuzzle (n : Nat) (positive : 0 < n) (seed : Nat) :
+def searchPuzzle (n : Nat) (positive : 0 < n) (liarCount seed : Nat) :
     Option GeneratedPuzzle :=
   let rec search (attempt remaining : Nat) : Option GeneratedPuzzle :=
     match remaining with
     | 0 => none
     | remaining + 1 =>
-        let puzzle := candidatePuzzle n positive seed attempt
+        let puzzle := candidatePuzzle n positive liarCount seed attempt
         if _readable : readableCandidate puzzle then
           match certify puzzle with
-          | some certified => some { boxCount := n, seed, attempt, certified }
+          | some certified => some { boxCount := n, liarCount, seed, attempt, certified }
           | none => search (attempt + 1) remaining
         else
           search (attempt + 1) remaining
-  if n = 2 ∧ seed = 0 then
-    some { boxCount := 2, seed := 0, attempt := 0, certified := exampleTwoCertified }
-  else
-    search 0 2000
+  search 0 4000
 
-def generateForCount (n : Nat) (positive : 0 < n) (count : Nat) :
+def generateForParameters (n : Nat) (positive : 0 < n) (liarCount count : Nat) :
     List GeneratedPuzzle :=
-  ((List.range (count * 3)).filterMap (searchPuzzle n positive)).take count
+  let rec collect (seed remaining budget : Nat) : List GeneratedPuzzle :=
+    match remaining, budget with
+    | 0, _ => []
+    | _, 0 => []
+    | remaining + 1, budget + 1 =>
+        match searchPuzzle n positive liarCount seed with
+        | some generated => generated :: collect (seed + 1) remaining budget
+        | none => collect (seed + 1) (remaining + 1) budget
+  collect 0 count (count * 4)
 
 end BoxPuzzles

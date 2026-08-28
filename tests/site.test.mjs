@@ -18,11 +18,13 @@ test('static page uses jehlp.net metadata, shared theme, and its own favicon', (
 test('interface exposes generation, answer, explanation, and certificate controls', () => {
   assert.match(source, />Rules</);
   assert.match(source, /Exactly one box contains the gem/);
-  assert.match(source, /Exactly one box&apos;s inscription is false; every other inscription is true/);
-  assert.match(source, /The false inscription may differ between valid cases/);
+  assert.match(source, /The inscriptions uniquely determine both the gem box and every liar box/);
+  assert.doesNotMatch(source, /may differ between valid cases/);
   assert.doesNotMatch(source, /One gem\. One false inscription\. Which box is forced\?/);
-  assert.match(source, /type="range" min="2" max="8"/);
+  assert.match(source, /id="box-count" type="range" min="2" max="16"/);
+  assert.match(source, /id="liar-count" type="range" min="1"/);
   assert.match(source, />New puzzle</);
+  assert.match(source, />Load seed</);
   assert.match(source, />Check answer</);
   assert.match(source, />Reveal</);
   assert.match(source, /All valid cases agree/);

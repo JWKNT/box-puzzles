@@ -3,8 +3,8 @@ import BoxPuzzles.Export
 open Lean BoxPuzzles
 
 def main (args : List String) : IO UInt32 := do
-  if generatedCatalog.length != 168 then
-    IO.eprintln s!"expected 168 verified puzzles, generated {generatedCatalog.length}"
+  if generatedCatalog.length != 480 then
+    IO.eprintln s!"expected 480 verified puzzles, generated {generatedCatalog.length}"
     return 1
   let payload := (toJson catalogJson).pretty 120 ++ "\n"
   match args with
