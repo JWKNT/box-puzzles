@@ -169,11 +169,18 @@ export default function PuzzleApp() {
         </nav>
       </header>
 
-      <main className="page-shell" id="puzzle">
-        <section className="puzzle-heading" aria-labelledby="page-title">
-          <div>
-            <h1 id="page-title">Box logic</h1>
-          </div>
+      <main className="page-shell" id="puzzle" aria-labelledby="page-title">
+        <h1 className="sr-only" id="page-title">Box logic</h1>
+        <div className="puzzle-setup">
+          <section className="rules" aria-labelledby="rules-title">
+            <h2 id="rules-title">Rules</h2>
+            <ol>
+              <li>Exactly one box contains the gem.</li>
+              <li>Exactly {liarCount} {liarCount === 1 ? 'inscription is' : 'inscriptions are'} false; the other {truthfulCount} {truthfulCount === 1 ? 'is' : 'are'} true.</li>
+              <li>Each inscription is evaluated as one complete statement; its parts do not lie independently. If a false inscription says “A or B,” then both A and B are false.</li>
+              <li>The inscriptions uniquely determine both the gem box and every liar box. Select the gem box.</li>
+            </ol>
+          </section>
           <div className="puzzle-controls">
             <div className="range-control">
               <label htmlFor="box-count">Boxes <output htmlFor="box-count">{boxCount}</output></label>
@@ -187,17 +194,7 @@ export default function PuzzleApp() {
               {generating ? 'Generating…' : 'Generate puzzle'}
             </button>
           </div>
-        </section>
-
-        <section className="rules" aria-labelledby="rules-title">
-          <h2 id="rules-title">Rules</h2>
-          <ol>
-            <li>Exactly one box contains the gem.</li>
-            <li>Exactly {liarCount} {liarCount === 1 ? 'inscription is' : 'inscriptions are'} false; the other {truthfulCount} {truthfulCount === 1 ? 'is' : 'are'} true.</li>
-            <li>Each inscription is evaluated as one complete statement; its parts do not lie independently. If a false inscription says “A or B,” then both A and B are false.</li>
-            <li>The inscriptions uniquely determine both the gem box and every liar box. Select the gem box.</li>
-          </ol>
-        </section>
+        </div>
 
         {generating && <p className="loading" role="status">Generating from the seed and checking every possible case…</p>}
         {generationError && <p className="load-error" role="alert">{generationError}</p>}

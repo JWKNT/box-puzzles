@@ -18,6 +18,9 @@ test('static page uses jehlp.net metadata, shared theme, and its own favicon', (
 });
 
 test('interface exposes generation, answer, explanation, and certificate controls', () => {
+  assert.match(source, /<h1 className="sr-only" id="page-title">Box logic<\/h1>/);
+  assert.doesNotMatch(source, /<h1 id="page-title">Box logic<\/h1>/);
+  assert.match(source, /className="puzzle-setup"/);
   assert.match(source, />Rules</);
   assert.match(source, /Exactly one box contains the gem/);
   assert.match(source, /Each inscription is evaluated as one complete statement/);
