@@ -1,0 +1,10 @@
+name = "BoxPuzzles"
+version = "0.1.0"
+defaultTargets = ["BoxPuzzles", "box-puzzle-catalog"]
+
+[[lean_lib]]
+name = "BoxPuzzles"
+
+[[lean_exe]]
+name = "box-puzzle-catalog"
+root = "GenerateCatalog"
