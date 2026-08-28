@@ -34,7 +34,12 @@ test('interface exposes generation, answer, explanation, and certificate control
   assert.match(source, />Load seed</);
   assert.match(source, />Check answer</);
   assert.match(source, />Reveal</);
-  assert.match(source, /The unique valid case/);
+  assert.doesNotMatch(source, /The unique valid case/);
+  assert.match(source, /className="box-verdict"/);
+  assert.match(source, /isFalse \? 'False' : 'True'/);
+  assert.match(source, /verdict-badge is-gem/);
+  assert.match(source, /className="solution-panel"/);
+  assert.match(source, /box contains the gem/);
   assert.match(source, /Lean proof source/);
   assert.match(source, /Normalized statements/);
   assert.doesNotMatch(source, /fetch\(['"]\.\/puzzles\.json/);

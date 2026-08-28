@@ -207,17 +207,28 @@ export default function PuzzleApp() {
             <fieldset className="puzzle-fieldset">
               <legend className="sr-only">Choose the box containing the gem</legend>
               <div className="boxes" style={{ '--box-count': Math.min(boxCount, 4) } as React.CSSProperties}>
-                {puzzle.boxes.map((box) => (
-                  <label className={`box${selected === box.id ? ' is-selected' : ''}${solved && box.id === puzzle.gem ? ' has-gem' : ''}`} key={box.id} style={{ '--box-color': box.color } as React.CSSProperties}>
-                    <input type="radio" name="gem-box" value={box.id} checked={selected === box.id} onChange={() => { setSelected(box.id); setResult(null); }} />
-                    <span className="box-lid" aria-hidden="true"><span /></span>
-                    <span className="box-body">
-                      <span className="box-identity"><b>{box.letter}</b><span>{box.name} box</span></span>
-                      <q>{box.statement.replace(/\.$/, '')}</q>
-                      <span className="box-choice">{selected === box.id ? 'Selected' : 'Choose'}</span>
-                    </span>
-                  </label>
-                ))}
+                {puzzle.boxes.map((box) => {
+                  const isGem = box.id === puzzle.gem;
+                  const isFalse = puzzle.liars.includes(box.id);
+                  return (
+                    <label className={`box${selected === box.id ? ' is-selected' : ''}${solved ? ' is-solved' : ''}${solved && isGem ? ' has-gem' : ''}`} key={box.id} style={{ '--box-color': box.color } as React.CSSProperties}>
+                      <input type="radio" name="gem-box" value={box.id} checked={selected === box.id} onChange={() => { setSelected(box.id); setResult(null); }} />
+                      <span className="box-lid" aria-hidden="true"><span /></span>
+                      <span className="box-body">
+                        <span className="box-identity"><b>{box.letter}</b><span>{box.name} box</span></span>
+                        <q>{box.statement.replace(/\.$/, '')}</q>
+                        {solved ? (
+                          <span className="box-verdict">
+                            <span className={`verdict-badge is-${isFalse ? 'false' : 'true'}`}>{isFalse ? 'False' : 'True'}<span className="sr-only"> inscription</span></span>
+                            {isGem && <span className="verdict-badge is-gem"><span aria-hidden="true">◆</span> Gem</span>}
+                          </span>
+                        ) : (
+                          <span className="box-choice">{selected === box.id ? 'Selected' : 'Choose'}</span>
+                        )}
+                      </span>
+                    </label>
+                  );
+                })}
               </div>
             </fieldset>
 
@@ -234,30 +245,25 @@ export default function PuzzleApp() {
 
             {seedError && <p className="seed-error" role="alert">{seedError}</p>}
 
-            <div className={`answer-status${result ? ` is-${result}` : ''}`} role="status" aria-live="polite">
-              {!result && 'Choose a box.'}
-              {result === 'incorrect' && 'Not the solution. Try another, or reveal.'}
-              {result === 'correct' && <>Correct · <strong>{gemBox.name} box</strong></>}
-              {result === 'revealed' && <>Gem · <strong>{gemBox.name} box</strong></>}
-            </div>
+            {!solved && (
+              <div className={`answer-status${result ? ` is-${result}` : ''}`} role="status" aria-live="polite">
+                {!result && 'Choose a box.'}
+                {result === 'incorrect' && 'Not the solution. Try another, or reveal.'}
+              </div>
+            )}
 
             {solved && (
-              <section className="reasoning" aria-labelledby="reasoning-title">
-                <div className="section-heading">
-                  <div><p className="eyebrow">Result</p><h2 id="reasoning-title">The unique valid case</h2></div>
-                  <p>Liars: {liarNames}. Gem: {gemBox.name}.</p>
+              <section className="solution-panel" aria-labelledby="solution-title" aria-live="polite">
+                <div className="solution-heading">
+                  <span className="solution-symbol" aria-hidden="true">◆</span>
+                  <div>
+                    <p className="eyebrow">Solution</p>
+                    <h2 id="solution-title">{gemBox.name} box contains the gem</h2>
+                  </div>
                 </div>
-                <div className="model-table-wrap">
-                  <table>
-                    <thead><tr><th>Liars</th><th>Gem</th>{puzzle.boxes.map((box) => <th key={box.id}>{box.letter}</th>)}</tr></thead>
-                    <tbody>{puzzle.worlds.map((world) => (
-                      <tr key={`${world.gem}-${world.liars.join('-')}`}>
-                        <td>{world.liars.map((liar) => puzzle.boxes[liar].name).join(', ')}</td>
-                        <td>{puzzle.boxes[world.gem].name}</td>
-                        {puzzle.boxes.map((box) => <td key={box.id} aria-label={`${box.name} inscription is ${world.liars.includes(box.id) ? 'false' : 'true'}`}>{world.liars.includes(box.id) ? 'F' : 'T'}</td>)}
-                      </tr>
-                    ))}</tbody>
-                  </table>
+                <div className="solution-fact">
+                  <span>False {puzzle.liarCount === 1 ? 'inscription' : 'inscriptions'}</span>
+                  <strong>{liarNames}</strong>
                 </div>
               </section>
             )}
