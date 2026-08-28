@@ -10,7 +10,8 @@ test('static page uses jehlp.net metadata, shared theme, and its own favicon', (
   assert.match(html, /site-theme\/v2\/base\.css/);
   assert.match(source, /site-theme\/v2\/theme\.js/);
   assert.match(html, /favicons\/box-puzzles\.png/);
-  assert.match(html, /og\.png/);
+  assert.doesNotMatch(html, /og:image|twitter:image|summary_large_image|og\.png/);
+  assert.doesNotMatch(source, /images:\s*\[|summary_large_image|og\.png/);
   assert.doesNotMatch(html, />\s*JWKNT\s*</i);
 });
 

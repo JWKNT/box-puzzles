@@ -13,13 +13,11 @@ export const metadata: Metadata = {
     url: './',
     siteName: 'jehlp.net',
     type: 'website',
-    images: [{ url: 'og.png', width: 1731, height: 909, alt: 'Box Logic puzzle boxes and a gem' }],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: 'Box Logic · jehlp.net',
     description: 'Lean-verified one-liar box puzzles with a uniquely determined gem.',
-    images: ['og.png'],
   },
 };
 
