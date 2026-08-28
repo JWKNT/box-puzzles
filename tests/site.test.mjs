@@ -19,7 +19,7 @@ test('interface exposes generation, answer, explanation, and certificate control
   assert.match(source, />New puzzle</);
   assert.match(source, />Check answer</);
   assert.match(source, />Reveal</);
-  assert.match(source, /Every valid case agrees/);
+  assert.match(source, /All valid cases agree/);
   assert.match(source, /Lean certificate/);
   assert.match(source, /Normalized statements/);
 });

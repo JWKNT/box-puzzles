@@ -130,7 +130,6 @@ export default function PuzzleApp() {
       <header className="site-header">
         <a className="site-name" href="https://jehlp.net/">jehlp.net / box puzzles</a>
         <nav aria-label="Site links">
-          <a href="#method">Method</a>
           <a href="https://github.com/JWKNT/box-puzzles">Source</a>
           <button className="theme-toggle" type="button" data-theme-toggle aria-label="Use dark theme" aria-pressed="false">◐</button>
         </nav>
@@ -139,7 +138,6 @@ export default function PuzzleApp() {
       <main className="page-shell" id="puzzle">
         <section className="puzzle-heading" aria-labelledby="page-title">
           <div>
-            <p className="eyebrow">One liar · one gem</p>
             <h1 id="page-title">Box logic</h1>
           </div>
           <div className="puzzle-controls">
@@ -149,7 +147,7 @@ export default function PuzzleApp() {
           </div>
         </section>
 
-        <p className="rules">One box contains the gem. Exactly one inscription is false. Where must the gem be?</p>
+        <p className="rules">One gem. One false inscription. Which box is forced?</p>
 
         {loadError && <p className="load-error" role="alert">The verified puzzle catalog could not be loaded.</p>}
         {!puzzle && !loadError && <p className="loading" role="status">Loading verified puzzles…</p>}
@@ -166,7 +164,7 @@ export default function PuzzleApp() {
                     <span className="box-body">
                       <span className="box-identity"><b>{box.letter}</b><span>{box.name} box</span></span>
                       <q>{box.statement.replace(/\.$/, '')}</q>
-                      <span className="box-choice">{selected === box.id ? 'Selected' : `Choose ${box.name}`}</span>
+                      <span className="box-choice">{selected === box.id ? 'Selected' : 'Choose'}</span>
                     </span>
                   </label>
                 ))}
@@ -180,19 +178,19 @@ export default function PuzzleApp() {
             </div>
 
             <div className={`answer-status${result ? ` is-${result}` : ''}`} role="status" aria-live="polite">
-              {!result && 'Select the box you think contains the gem.'}
-              {result === 'incorrect' && 'That box is not forced by the inscriptions. Try another, or reveal the solution.'}
-              {result === 'correct' && <>Correct. The gem must be in the <strong>{gemBox.name} box</strong>.</>}
-              {result === 'revealed' && <>The gem must be in the <strong>{gemBox.name} box</strong>.</>}
+              {!result && 'Choose a box.'}
+              {result === 'incorrect' && 'Not forced. Try another, or reveal.'}
+              {result === 'correct' && <>Correct · <strong>{gemBox.name} box</strong></>}
+              {result === 'revealed' && <>Gem · <strong>{gemBox.name} box</strong></>}
             </div>
 
             {solved && (
               <section className="reasoning" aria-labelledby="reasoning-title">
                 <div className="section-heading">
-                  <div><p className="eyebrow">Invariant</p><h2 id="reasoning-title">Every valid case agrees</h2></div>
+                  <div><p className="eyebrow">Result</p><h2 id="reasoning-title">All valid cases agree</h2></div>
                   <p>{puzzle.possibleLiars.length > 1
-                    ? `The cases disagree about the liar (${liarNames}), but all put the gem in ${gemBox.name}.`
-                    : `Only the ${liarNames} box can be lying; the gem is in ${gemBox.name}.`}</p>
+                    ? `Possible liars: ${liarNames}. Gem: ${gemBox.name} in every case.`
+                    : `Liar: ${liarNames}. Gem: ${gemBox.name}.`}</p>
                 </div>
                 <div className="model-table-wrap">
                   <table>
@@ -230,11 +228,6 @@ export default function PuzzleApp() {
           </>
         )}
 
-        <section className="method" id="method">
-          <p className="ornament" aria-hidden="true">✦</p>
-          <h2>What Lean proves</h2>
-          <p>Each world chooses one liar and one gem location. A world is valid when every box except the liar states a true formula. Lean enumerates all such worlds, rejects puzzles with none, and exports only puzzles whose valid worlds share one gem location.</p>
-        </section>
       </main>
     </>
   );
