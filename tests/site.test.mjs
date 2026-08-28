@@ -7,6 +7,8 @@ const source = await readFile(new URL('../src/PuzzleApp.tsx', import.meta.url), 
 
 test('static page uses jehlp.net metadata, shared theme, and its own favicon', () => {
   assert.match(html, /https:\/\/jehlp\.net\/box-puzzles\//);
+  assert.match(html, /configurable liar counts and a unique solution/);
+  assert.match(source, /liarCount/);
   assert.match(html, /site-theme\/v2\/base\.css/);
   assert.match(source, /site-theme\/v2\/theme\.js/);
   assert.match(html, /favicons\/box-puzzles\.png/);

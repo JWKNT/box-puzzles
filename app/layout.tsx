@@ -3,13 +3,13 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Box Logic · jehlp.net',
-  description: 'Lean-verified one-liar box puzzles with a uniquely determined gem.',
+  description: 'Lean-verified box puzzles with configurable liar counts and a unique solution.',
   metadataBase: new URL('https://jehlp.net/box-puzzles/'),
   alternates: { canonical: './' },
   icons: { icon: 'https://jehlp.net/site-theme/v2/favicons/box-puzzles.png' },
   openGraph: {
     title: 'Box Logic · jehlp.net',
-    description: 'Lean-verified one-liar box puzzles with a uniquely determined gem.',
+    description: 'Lean-verified box puzzles with configurable liar counts and a unique solution.',
     url: './',
     siteName: 'jehlp.net',
     type: 'website',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'Box Logic · jehlp.net',
-    description: 'Lean-verified one-liar box puzzles with a uniquely determined gem.',
+    description: 'Lean-verified box puzzles with configurable liar counts and a unique solution.',
   },
 };
 
