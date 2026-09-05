@@ -17,7 +17,7 @@ test('static page uses jehlp.net metadata, shared theme, and its own favicon', (
   assert.doesNotMatch(source, /images:\s*\[|summary_large_image|og\.png/);
   assert.doesNotMatch(html, />\s*JWKNT\s*</i);
   assert.doesNotMatch(source, /<a\b[^>]*href="https:\/\/jehlp\.net\/?"/);
-  assert.match(source, /className="site-mark" aria-hidden="true"/);
+  assert.match(source, /<img className="site-mark" src="[^"]+\/marks\/box-puzzles\.png" width="32" height="32" alt=""/);
 });
 
 test('interface exposes generation, answer, explanation, and certificate controls', () => {
