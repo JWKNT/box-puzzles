@@ -40,13 +40,13 @@ h1 { margin: 0; font: 600 clamp(28px, 4vw, 40px)/1.03 var(--serif); letter-spaci
 .box.is-solved .box-body { border-color: color-mix(in srgb, var(--box-color) 72%, var(--line-strong)); }
 .box.has-gem .box-body { border-color: var(--box-color); background: color-mix(in srgb, var(--box-color) 13%, var(--paper)); box-shadow: inset 0 0 0 1px var(--box-color); }
 .box.has-gem .box-lid { transform: translateY(-4px); }
-.box-identity { display: flex; flex-wrap: wrap; gap: 9px; align-items: baseline; color: var(--muted-strong); font: .75rem/1.3 var(--mono); letter-spacing: .045em; text-transform: uppercase; }
+.box-identity { display: flex; flex-wrap: wrap; gap: 9px; align-items: baseline; color: var(--muted-strong); font: var(--text-ui, .875rem)/1.4 var(--sans); }
 .box-identity b { display: grid; width: 22px; height: 22px; place-items: center; border: 1px solid var(--box-color); color: var(--box-color); font-weight: 700; }
 .box q { display: block; margin: 24px 0 25px; color: var(--ink); font: 17px/1.43 var(--serif); quotes: '“' '”'; }
-.box-choice { margin-top: auto; padding-top: 11px; color: var(--muted); font: .75rem/1.3 var(--mono); }
+.box-choice { margin-top: auto; padding-top: 11px; color: var(--muted); font: var(--text-ui, .875rem)/1.4 var(--sans); }
 .box.is-selected .box-choice { color: var(--box-color); }
 .box-verdict { display: flex; gap: 7px; margin-top: auto; padding-top: 12px; flex-wrap: wrap; border-top: 1px solid var(--line); }
-.verdict-badge { display: inline-flex; min-height: 28px; padding: 5px 9px; gap: 5px; align-items: center; border: 1px solid currentColor; border-radius: 0; background: var(--surface); font: 600 .75rem/1.2 var(--mono); letter-spacing: .045em; text-transform: uppercase; }
+.verdict-badge { display: inline-flex; min-height: 28px; padding: 5px 9px; gap: 5px; align-items: center; border: 1px solid currentColor; border-radius: 0; background: var(--surface); font: 600 var(--text-ui, .875rem)/1.4 var(--sans); }
 .verdict-badge.is-true { color: var(--blue-dark); }
 .verdict-badge.is-false { color: var(--red, #9b3c35); }
 .verdict-badge.is-gem { border-color: var(--box-color); background: color-mix(in srgb, var(--box-color) 10%, var(--surface)); color: var(--ink); }
@@ -76,7 +76,7 @@ h1 { margin: 0; font: 600 clamp(28px, 4vw, 40px)/1.03 var(--serif); letter-spaci
 .solution-panel .eyebrow { margin-bottom: 4px; }
 .solution-panel h2 { margin: 0; font: 600 clamp(22px, 3vw, 30px)/1.15 var(--serif); letter-spacing: -.018em; }
 .solution-fact { padding-left: 22px; border-left: 1px solid var(--line-strong); }
-.solution-fact span { display: block; margin-bottom: 6px; color: var(--muted); font: .75rem/1.4 var(--sans); letter-spacing: .05em; text-transform: uppercase; }
+.solution-fact span { display: block; margin-bottom: 6px; color: var(--muted); font: var(--text-ui, .875rem)/1.4 var(--sans); }
 .solution-fact strong { display: block; color: var(--ink); font: 600 17px/1.4 var(--serif); }
 
 .certificate { margin-top: 47px; padding: 14px 0; border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); }
@@ -88,10 +88,10 @@ h1 { margin: 0; font: 600 clamp(28px, 4vw, 40px)/1.03 var(--serif); letter-spaci
 .certificate-grid { display: grid; grid-template-columns: minmax(240px, .65fr) minmax(0, 1.35fr); gap: 35px; margin-top: 20px; }
 .certificate dl { margin: 0; }
 .certificate dl div { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 7px 0; border-top: 1px solid var(--line); }
-.certificate dt { color: var(--muted); font: .75rem/1.5 var(--sans); }
+.certificate dt { color: var(--muted); font: var(--text-ui, .875rem)/1.5 var(--sans); }
 .certificate dd { min-width: 0; margin: 0; overflow-wrap: anywhere; font: .875rem/1.5 var(--mono); }
 .code-heading { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: space-between; align-items: center; }
-.code-heading h3 { margin: 0; font: 600 13px/1.3 var(--serif); }
+.code-heading h3 { margin: 0; font: 600 var(--text-ui, .875rem)/1.4 var(--sans); }
 .code-heading button { border: 0; border-bottom: 1px solid currentColor; background: transparent; color: var(--muted-strong); font: .875rem/1.4 var(--sans); cursor: pointer; }
 pre { max-width: 100%; margin: 10px 0 0; padding: 14px; overflow: auto; background: var(--code-bg, var(--surface)); color: var(--ink); font: .75rem/1.55 var(--mono); }
 .normalized-ast { margin-top: 15px; padding-top: 12px; border: 0; border-top: 1px solid var(--line); }
