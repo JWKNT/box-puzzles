@@ -164,7 +164,6 @@ export default function PuzzleApp() {
       <header className="site-header site-header--identity">
         <div className="site-brand"><img className="site-mark" src="https://jehlp.net/site-theme/v2/marks/box-puzzles.png" width="32" height="32" alt="" /><span className="site-title">Box Logic</span></div>
         <nav aria-label="Site links">
-          <a href="https://github.com/JWKNT/box-puzzles">Source</a>
           <button className="theme-toggle" type="button" data-theme-toggle aria-label="Use dark theme" aria-pressed="false">◐</button>
         </nav>
       </header>
@@ -296,6 +295,7 @@ export default function PuzzleApp() {
           </form>
         )}
       </main>
+      <footer className="site-footer"><a href="https://github.com/JWKNT/box-puzzles">Source</a></footer>
     </>
   );
 }
