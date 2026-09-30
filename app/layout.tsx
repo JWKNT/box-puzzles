@@ -25,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <head>
-        <link rel="stylesheet" href="https://jehlp.net/site-theme/v2/base.css" />
+        <link rel="stylesheet" href="https://jehlp.net/site-theme/v2/base.css?v=20260930-dial" />
       </head>
       <body>{children}</body>
     </html>
