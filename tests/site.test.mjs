@@ -53,3 +53,17 @@ test('box cards use equal-height grid tracks and stretch their bodies', () => {
   assert.match(css, /\.box \{[^}]*display: flex[^}]*flex-direction: column/);
   assert.match(css, /\.box-body \{[^}]*flex: 1/);
 });
+
+// The shared button hover rule has greater specificity than .check-answer.
+// Keep both colors paired so it cannot turn the primary button paper-on-paper.
+test('answer button preserves its contrasting color pair on hover', () => {
+  assert.match(css, /\.check-answer, \.check-answer:hover:not\(:disabled\) \{[^}]*background: var\(--ink\);[^}]*color: var\(--paper\);/);
+});
+
+test('false verdicts and errors use the light/dark semantic error token', () => {
+  assert.doesNotMatch(css, /var\(--red[,)]/);
+  for (const selector of ['.verdict-badge.is-false', '.seed-error', '.load-error']) {
+    const rule = css.slice(css.lastIndexOf(selector)).split('}')[0];
+    assert.match(rule, /color: var\(--bad, #9b3c35\)/);
+  }
+});
