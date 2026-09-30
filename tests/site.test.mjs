@@ -75,7 +75,7 @@ test('both page shells retain a native Home link before React starts', async () 
     assert.equal((shell.match(/class(?:Name)?="site-home-dock"/g) || []).length, 1);
     assert.match(shell, /<body>\s*<nav class(?:Name)?="site-home-dock" aria-label="Site">/);
     assert.match(shell, /class(?:Name)?="site-home" href="https:\/\/jehlp\.net\/" aria-label="Home · jehlp.net"/);
-    assert.match(shell, /base\.css\?v=20260930-home/);
+    assert.match(shell, /base\.css\?v=20260930-home2/);
   }
-  assert.match(source, /theme\.js\?v=20260930-home/);
+  assert.match(source, /theme\.js\?v=20260930-home2/);
 });
