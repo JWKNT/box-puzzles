@@ -43,7 +43,7 @@ export default function PuzzleApp() {
 
   useEffect(() => {
     const themeScript = document.createElement('script');
-    themeScript.src = 'https://jehlp.net/site-theme/v2/theme.js?v=20260930-home3';
+    themeScript.src = 'https://jehlp.net/site-theme/v2/theme.js?v=20260930-header-home';
     themeScript.dataset.boxPuzzlesTheme = 'true';
     document.head.append(themeScript);
 
@@ -160,14 +160,6 @@ export default function PuzzleApp() {
 
   return (
     <>
-      <a className="skip-link" href="#puzzle">Skip to puzzle</a>
-      <header className="site-header site-header--identity">
-        <div className="site-brand"><img className="site-mark" src="https://jehlp.net/site-theme/v2/marks/box-puzzles.png" width="32" height="32" alt="" /><span className="site-title">Box Logic</span></div>
-        <nav aria-label="Site links">
-          <button className="theme-toggle" type="button" data-theme-toggle aria-label="Use dark theme" aria-pressed="false">◐</button>
-        </nav>
-      </header>
-
       <main className="page-shell" id="puzzle" aria-labelledby="page-title">
         <h1 className="sr-only" id="page-title">Box logic</h1>
         <div className="puzzle-setup">

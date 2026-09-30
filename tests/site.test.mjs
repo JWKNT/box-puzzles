@@ -17,7 +17,7 @@ test('static page uses jehlp.net metadata, shared theme, and its own favicon', (
   assert.doesNotMatch(source, /images:\s*\[|summary_large_image|og\.png/);
   assert.doesNotMatch(html, />\s*JWKNT\s*</i);
   assert.doesNotMatch(source, /<a\b[^>]*href="https:\/\/jehlp\.net\/?"/);
-  assert.match(source, /<img className="site-mark" src="[^"]+\/marks\/box-puzzles\.png" width="32" height="32" alt=""/);
+  assert.match(html, /<img class="site-mark" src="[^"]+\/marks\/box-puzzles\.png" width="32" height="32" alt=""/);
 });
 
 test('interface exposes generation, answer, explanation, and certificate controls', () => {
@@ -69,13 +69,14 @@ test('false verdicts and errors use the light/dark semantic error token', () => 
 });
 
 
-test('both page shells retain a native Home link before React starts', async () => {
+test('both page shells retain native header Home before React starts', async () => {
   const layout = await readFile(new URL('../app/layout.tsx', import.meta.url), 'utf8');
   for (const shell of [html, layout]) {
-    assert.equal((shell.match(/class(?:Name)?="site-home-dock"/g) || []).length, 1);
-    assert.match(shell, /<body>\s*<nav class(?:Name)?="site-home-dock" aria-label="Site">/);
-    assert.match(shell, /class(?:Name)?="site-home" href="https:\/\/jehlp\.net\/" aria-label="Home · jehlp.net"/);
-    assert.match(shell, /base\.css\?v=20260930-home2/);
+    assert.equal((shell.match(/class(?:Name)?="site-home"/g) || []).length, 1);
+    assert.doesNotMatch(shell, /site-home-dock/);
+    assert.match(shell, /<header class(?:Name)?="site-header site-header--identity">[\s\S]*?<span class(?:Name)?="site-utility-pair"><a class(?:Name)?="site-home"[^>]*aria-label="Home — jehlp.net"[\s\S]*?<\/a><button[^>]*data-theme-toggle/);
+    assert.match(shell, /base\.css\?v=20260930-header-home/);
   }
-  assert.match(source, /theme\.js\?v=20260930-home3/);
+  assert.doesNotMatch(source, /<header|className="site-home"/);
+  assert.match(source, /theme\.js\?v=20260930-header-home/);
 });
