@@ -25,9 +25,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <head>
-        <link rel="stylesheet" href="https://jehlp.net/site-theme/v2/base.css?v=20260930-dial" />
+        <link rel="stylesheet" href="https://jehlp.net/site-theme/v2/base.css?v=20260930-home" />
       </head>
-      <body>{children}</body>
+      <body>
+        <nav className="site-home-dock" aria-label="Site"><a className="site-home" href="https://jehlp.net/" aria-label="Home · jehlp.net" title="Home · jehlp.net"><span aria-hidden="true">⌂</span></a></nav>
+        {children}
+      </body>
     </html>
   );
 }

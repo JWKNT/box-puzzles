@@ -67,3 +67,15 @@ test('false verdicts and errors use the light/dark semantic error token', () => 
     assert.match(rule, /color: var\(--bad, #9b3c35\)/);
   }
 });
+
+
+test('both page shells retain a native Home link before React starts', async () => {
+  const layout = await readFile(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  for (const shell of [html, layout]) {
+    assert.equal((shell.match(/class(?:Name)?="site-home-dock"/g) || []).length, 1);
+    assert.match(shell, /<body>\s*<nav class(?:Name)?="site-home-dock" aria-label="Site">/);
+    assert.match(shell, /class(?:Name)?="site-home" href="https:\/\/jehlp\.net\/" aria-label="Home · jehlp.net"/);
+    assert.match(shell, /base\.css\?v=20260930-home/);
+  }
+  assert.match(source, /theme\.js\?v=20260930-home/);
+});

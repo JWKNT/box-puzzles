@@ -43,7 +43,7 @@ export default function PuzzleApp() {
 
   useEffect(() => {
     const themeScript = document.createElement('script');
-    themeScript.src = 'https://jehlp.net/site-theme/v2/theme.js';
+    themeScript.src = 'https://jehlp.net/site-theme/v2/theme.js?v=20260930-home';
     themeScript.dataset.boxPuzzlesTheme = 'true';
     document.head.append(themeScript);
 
