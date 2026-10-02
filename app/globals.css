@@ -28,7 +28,8 @@ h1 { margin: 0; font: 700 clamp(28px, 4vw, 40px)/1.03 var(--serif); letter-spaci
 
 .puzzle-fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
 .boxes { display: grid; grid-template-columns: repeat(var(--box-count), minmax(0, 1fr)); grid-auto-rows: 1fr; gap: clamp(15px, 2.3vw, 28px); align-items: stretch; }
-.box { position: relative; display: flex; min-width: 0; padding-top: 12px; flex-direction: column; cursor: pointer; }
+/* Keep box hues on decorative surfaces; small labels also need the theme's ink. */
+.box { --box-label-ink: color-mix(in srgb, var(--box-color) 40%, var(--ink)); position: relative; display: flex; min-width: 0; padding-top: 12px; flex-direction: column; cursor: pointer; }
 .box input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .box-lid { display: block; height: 14px; margin: 0 10px; flex: 0 0 14px; border: 1px solid color-mix(in srgb, var(--box-color) 72%, black); background: var(--box-color); box-shadow: inset 0 1px rgb(255 255 255 / 20%); transition: transform 140ms ease; }
 .box-lid span { display: block; width: 34%; height: 4px; margin: -5px auto 0; border: 1px solid color-mix(in srgb, var(--box-color) 72%, black); background: var(--box-color); }
@@ -41,10 +42,10 @@ h1 { margin: 0; font: 700 clamp(28px, 4vw, 40px)/1.03 var(--serif); letter-spaci
 .box.has-gem .box-body { border-color: var(--box-color); background: color-mix(in srgb, var(--box-color) 13%, var(--paper)); box-shadow: inset 0 0 0 1px var(--box-color); }
 .box.has-gem .box-lid { transform: translateY(-4px); }
 .box-identity { display: flex; flex-wrap: wrap; gap: 9px; align-items: baseline; color: var(--muted-strong); font: var(--text-ui, .875rem)/1.4 var(--ui, var(--serif)); }
-.box-identity b { display: grid; width: 22px; height: 22px; place-items: center; border: 1px solid var(--box-color); color: var(--box-color); font-weight: 700; }
+.box-identity b { display: grid; width: 22px; height: 22px; place-items: center; border: 1px solid var(--box-color); color: var(--box-label-ink); font-weight: 700; }
 .box q { display: block; margin: 24px 0 25px; color: var(--ink); font: 17px/1.43 var(--serif); quotes: '“' '”'; }
 .box-choice { margin-top: auto; padding-top: 11px; color: var(--muted); font: var(--text-ui, .875rem)/1.4 var(--ui, var(--serif)); }
-.box.is-selected .box-choice { color: var(--box-color); }
+.box.is-selected .box-choice { color: var(--box-label-ink); }
 .box-verdict { display: flex; gap: 7px; margin-top: auto; padding-top: 12px; flex-wrap: wrap; border-top: 1px solid var(--line); }
 .verdict-badge { display: inline-flex; min-height: 28px; padding: 5px 9px; gap: 5px; align-items: center; border: 1px solid currentColor; border-radius: 0; background: var(--surface); font: 600 var(--text-ui, .875rem)/1.4 var(--ui, var(--serif)); }
 .verdict-badge.is-true { color: var(--blue-dark); }
