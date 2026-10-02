@@ -26,7 +26,7 @@ test('interface exposes generation, answer, explanation, and certificate control
   assert.match(source, /className="puzzle-setup"/);
   assert.match(source, />Rules</);
   assert.match(source, /Exactly one box contains the gem/);
-  assert.match(source, /Each inscription is evaluated as one complete statement/);
+  assert.match(source, /Treat each inscription as one complete statement/);
   assert.match(source, /If a false inscription says “A or B,” then both A and B are false/);
   assert.match(source, /The inscriptions uniquely determine both the gem box and every liar box/);
   assert.doesNotMatch(source, /may differ between valid cases/);

@@ -64,7 +64,7 @@ export default function PuzzleApp() {
         setBoxCount(requestedBoxCount);
         setLiarCount(requestedLiarCount);
         setPuzzle(generated);
-        setGenerationError(generated ? null : 'No unique puzzle was found for that seed.');
+        setGenerationError(generated ? null : 'The generator did not find a unique puzzle for that seed.');
         setGenerating(false);
       }, 0) : undefined;
 
@@ -101,7 +101,7 @@ export default function PuzzleApp() {
       const generated = generatePuzzle(nextBoxCount, nextLiarCount, seed) as Puzzle | null;
       if (generationToken.current !== token) return;
       setPuzzle(generated);
-      setGenerationError(generated ? null : 'No unique puzzle was found for that seed. Try another seed.');
+      setGenerationError(generated ? null : 'The generator did not find a unique puzzle for that seed. Try another seed.');
       setGenerating(false);
     }, 0);
   };
@@ -167,8 +167,8 @@ export default function PuzzleApp() {
             <h2 id="rules-title">Rules</h2>
             <ol>
               <li>Exactly one box contains the gem.</li>
-              <li>Exactly {liarCount} {liarCount === 1 ? 'inscription is' : 'inscriptions are'} false; the other {truthfulCount} {truthfulCount === 1 ? 'is' : 'are'} true.</li>
-              <li>Each inscription is evaluated as one complete statement; its parts do not lie independently. If a false inscription says “A or B,” then both A and B are false.</li>
+              <li>Exactly {liarCount} {liarCount === 1 ? 'inscription is' : 'inscriptions are'} false. The other {truthfulCount} {truthfulCount === 1 ? 'is' : 'are'} true.</li>
+              <li>Treat each inscription as one complete statement. Do not assign separate liar states to its parts. If a false inscription says “A or B,” then both A and B are false.</li>
               <li>The inscriptions uniquely determine both the gem box and every liar box. Select the gem box.</li>
             </ol>
           </section>
@@ -187,10 +187,10 @@ export default function PuzzleApp() {
           </div>
         </div>
 
-        {generating && <p className="loading" role="status">Generating from the seed and checking every possible case…</p>}
+        {generating && <p className="loading" role="status">The generator uses the seed to test every possible case…</p>}
         {generationError && <p className="load-error" role="alert">{generationError}</p>}
         {!puzzle && !generating && !generationError && (
-          <p className="empty-state">Choose the box and liar counts, then generate a puzzle or enter a seed.</p>
+          <p className="empty-state">Choose the number of boxes. Choose the number of liar boxes. Then generate a puzzle or enter a seed.</p>
         )}
 
         {puzzle != null && gemBox != null && !generating && (
