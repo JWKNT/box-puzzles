@@ -45,7 +45,7 @@ export default function PuzzleApp() {
     const themeScript = document.createElement('script');
     themeScript.src = 'https://jehlp.net/site-theme/v2/theme.js?v=20260930-header-home';
     themeScript.dataset.boxPuzzlesTheme = 'true';
-    document.head.append(themeScript);
+    document.head.appendChild(themeScript);
 
     const params = new URLSearchParams(window.location.search);
     const requestedBoxCount = Number(params.get('n'));
@@ -193,7 +193,7 @@ export default function PuzzleApp() {
           <p className="empty-state">Choose the box and liar counts, then generate a puzzle or enter a seed.</p>
         )}
 
-        {puzzle && !generating && (
+        {puzzle != null && gemBox != null && !generating && (
           <>
             <fieldset className="puzzle-fieldset">
               <legend className="sr-only">Choose the box containing the gem</legend>

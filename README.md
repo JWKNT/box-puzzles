@@ -22,6 +22,7 @@ Lean 4.33.1 and Node 22 or later are required.
 ```sh
 lake build
 npm ci
+npm run typecheck
 npm test
 npm run build:pages
 ```
