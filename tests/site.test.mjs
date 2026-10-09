@@ -75,8 +75,8 @@ test('both page shells retain native header Home before React starts', async () 
     assert.equal((shell.match(/class(?:Name)?="site-home"/g) || []).length, 1);
     assert.doesNotMatch(shell, /site-home-dock/);
     assert.match(shell, /<header class(?:Name)?="site-header site-header--identity">[\s\S]*?<span class(?:Name)?="site-utility-pair"><a class(?:Name)?="site-home"[^>]*aria-label="Home — jehlp.net"[\s\S]*?<\/a><button[^>]*data-theme-toggle/);
-    assert.match(shell, /base\.css\?v=20260930-mobile-header/);
+    assert.match(shell, /base\.css\?v=20261009-folio-wrenfold/);
   }
   assert.doesNotMatch(source, /<header|className="site-home"/);
-  assert.match(source, /theme\.js\?v=20260930-header-home/);
+  assert.match(source, /theme\.js\?v=20261009-folio-wrenfold/);
 });
