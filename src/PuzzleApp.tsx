@@ -43,7 +43,7 @@ export default function PuzzleApp() {
 
   useEffect(() => {
     const themeScript = document.createElement('script');
-    themeScript.src = 'https://jehlp.net/site-theme/v2/theme.js?v=20261009-folio-wrenfold';
+    themeScript.src = 'https://jehlp.net/site-theme/v2/theme.js?v=20261009-reading-folio';
     themeScript.dataset.boxPuzzlesTheme = 'true';
     document.head.appendChild(themeScript);
 
