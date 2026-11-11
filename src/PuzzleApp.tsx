@@ -231,7 +231,6 @@ export default function PuzzleApp() {
                 <input id="seed-input" name="seed" key={puzzle.id} type="number" min="0" max={MAX_SEED} step="1" defaultValue={puzzle.seed} />
                 <button type="submit">Load seed</button>
               </form>
-              <span className="puzzle-id">attempt {puzzle.attempt} · 1 valid case</span>
             </div>
 
             {seedError && <p className="seed-error" role="alert">{seedError}</p>}
@@ -259,7 +258,7 @@ export default function PuzzleApp() {
             )}
 
             <details className="certificate">
-              <summary>Lean proof source <span>{puzzle.id} · reproducible</span></summary>
+              <summary>Lean proof source <span>{puzzle.id}</span></summary>
               <div className="certificate-grid">
                 <dl>
                   <div><dt>Model</dt><dd>exactly one gem and exactly {puzzle.liarCount} false {puzzle.liarCount === 1 ? 'inscription' : 'inscriptions'}</dd></div>
